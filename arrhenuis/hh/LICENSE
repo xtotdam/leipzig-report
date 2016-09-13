@@ -1,0 +1,29 @@
+// for hh.py
+
+/*
+{==========================================================================
+===== PROGRAMM: REGRESS2                                              =====
+=====                                                                 =====
+===== ZUR LINERAREN REGRESSION MIT FEHLERN FUER ABSCHNITT + STEIGUNG  =====
+=====                                                                 =====
+===== UND BERECHNUNG VON DELTA H DEGGA, DELTA S DEGGA, DELTA G DEGGA  =====
+=====                                                                 =====
+===== FUER BIMOLEKULARE REAKTIONEN                                    =====
+=====                                                                 =====
+===== VERSION 1.0 VOM 26.6.1989                                       =====
+=====                                                                 =====
+=====         2.0 VOM 5.10.1990                                       =====
+=====                                                                 =====
+===========================================================================
+=====                                                                 =====
+=====                     ALLE RECHTE BEI:                            =====
+=====                     HARTMUT HERRMANN                            =====
+=====                       IM HASSEL 6                               =====
+=====                     3400  GOETTINGEN                            =====
+=====                                                                 =====
+===========================================================================}
+
+Rewritten in Python by Alexey Syromyatnikov aka xtotdam
+25.08.2016
+
+*/

@@ -1,0 +1,13 @@
+*~
+
+*.pdf
+*.png
+*.eps
+*.data.txt
+
+*.aux
+*.log
+*.out
+*.gz
+*.toc
+/T.nb

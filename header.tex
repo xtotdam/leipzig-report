@@ -1,0 +1,100 @@
+% based on http://www.dfcd.net/articles/latex/latex.html
+% modified version of https://github.com/xtotdam/latex-templates/blob/master/header.tex
+
+\documentclass[a4paper,11pt]{article}
+\usepackage{cmap}               % seems to enable search in pdf
+\usepackage[T1,T2A]{fontenc}    % for correct work with cyrillic letters
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb,amsfonts}
+\usepackage[fleqn]{amsmath}
+\usepackage[russian,english]{babel}
+\usepackage{anyfontsize}
+\usepackage{graphicx}
+\usepackage{mathrsfs}           % calligraphic letters for math environment
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\usepackage{geometry}   % page geometry: margins
+\geometry{left=2cm}
+\geometry{right=1.5cm}
+\geometry{top=2cm}
+\geometry{bottom=2cm}
+
+\usepackage{fancyhdr}   % must be loaded after geometry!
+\setlength{\headheight}{15.2pt}
+\renewcommand{\headrulewidth}{0pt}
+\pagestyle{fancy}
+
+\DeclareMathOperator{\sinc}{sinc}
+\DeclareMathOperator{\const}{const}
+\DeclareMathOperator{\Tr}{Tr}   %trace
+\DeclareMathOperator{\Dim}{dim} %dimensions
+
+\let\vaccent=\v % rename builtin command \v{} to \vaccent{}
+\renewcommand{\v}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}} % for vectors of Greek letters
+\newcommand{\uv}[1]{\ensuremath{\mathbf{\hat{#1}}}} % for unit vector
+
+\newcommand{\abs}[1]{\left| #1 \right|} % for absolute value
+\newcommand{\norm}[1]{\lVert #1 \rVert} % for norm ||f||
+\newcommand{\qnorm}[1]{\lVert #1 \rVert ^2} % for norm quadrat ||f||^2
+\newcommand{\avg}[1]{\left< #1 \right>} % for average
+
+\newcommand{\vmult}[2]{[\vec{#1}{\times}\vec{#2}]} % vector multiplication
+\newcommand{\scmult}[2]{(\vec{#1}{\cdot}\vec{#2})} % scalar multiplication
+
+\let\underdot=\d % rename builtin command \d{} to \underdot{}
+\renewcommand{\d}[2]{\frac{d #1}{d #2}} % for derivatives
+\newcommand{\dd}[2]{\frac{d^2 #1}{d #2^2}} % for double derivatives
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}} % for partial derivatives
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}} % for double partial derivatives
+\newcommand{\pddv}[3]{\frac{\partial^2 #1}{\partial #2 \partial #3}} % for double partial derivatives, diff. variables
+\newcommand{\pdc}[3]{\left( \frac{\partial #1}{\partial #2} \right)_{#3}} % for thermodynamic partial derivatives
+
+\newcommand{\ket}[1]{\left| #1 \right>} % for Dirac kets
+\newcommand{\bra}[1]{\left< #1 \right|} % for Dirac bras
+\newcommand{\braket}[2]{\left< #1 \vphantom{#2} \right|\left. \!#2 \vphantom{#1} \right>} % for Dirac brackets
+\newcommand{\matrixel}[3]{\left< #1 \vphantom{#2#3} \right| #2 \left| #3 \vphantom{#1#2} \right>} % for Dirac matrix elements
+
+\newcommand{\comml}[2]{\left[ \hat{#1}, #2 \right]} % [A,...]
+\newcommand{\commr}[2]{\left[ #1, \hat{#2} \right]} % [...,B]
+\newcommand{\comm}[2]{\left[ \hat{#1}, \hat{#2} \right]} % for commutator for only two operators like [A,B]
+\newcommand{\commi}[4]{\left[ \hat{#1}_{#2}, \hat{#3}_{#4} \right]} % for commutator for only two operators like [A,B] with indices
+
+\let\divsymb=\div % rename builtin command \div to \divsymb
+\renewcommand{\div}[1]{\operatorname{div}\vec{#1}} % dirty hack for divergence
+\newcommand{\rot}[1]{\operatorname{rot}\vec{#1}}
+\newcommand{\grad}[1]{\operatorname{grad}\vec{#1}}
+
+\newcommand{\gradn}[1]{\vec{\nabla} #1} % for gradient
+\newcommand{\divn}[1]{\scmult{\nabla}{#1}} % for divergence
+\newcommand{\rotn}[1]{\vmult{\nabla}{#1}} % for curl
+
+\newcommand{\CCBYSA}[0]{\textcircled{\scalebox{.5}{CC}} \textcircled{\scalebox{.5}{BY}} \textcircled{\scalebox{.5}{SA}}}
+\newcommand{\MIT}[0]{MIT License}
+
+\usepackage{scrtime}
+\newcommand{\praiseme}[1]{\scalebox{.4}{\MIT,~\copyright~#1, compiled \the\day.\the\month.\the\year\textunderscore\thistime}}
+
+\newcommand{\tobewritten}[0]{\textcolor{red}{\textsc{To be written}}}
+\newcommand{\NB}[0]{\textbf{NB!}}
+\newcommand{\Def}[0]{$\mathfrak{Def.}$}
+\newcommand{\Th}[0]{$\mathfrak{[Th.]}$}
+\newcommand{\Wiki}[0]{$\mathfrak{(Wiki)}$}
+
+\newcommand{\bbar}[1]{\bar{\bar{#1}}}
+
+\newcommand{\negphantom}[1]{\settowidth{\dimen0}{#1}\hspace*{-\dimen0}}
+
+\usepackage[inline]{enumitem}
+\makeatletter
+\newcommand{\inlineitem}[1][]{
+    \ifnum\enit@type=\tw@
+        {\descriptionlabel{#1}}
+        \hspace{\labelsep}
+    \else
+        \ifnum\enit@type=\z@
+        \refstepcounter{\@listctr}\fi
+    \quad\@itemlabel\hspace{\labelsep}%
+    \fi
+}
+\makeatother

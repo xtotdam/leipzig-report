@@ -1,0 +1,243 @@
+\input{header}
+
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{cancel}
+\newcolumntype{x}[1]{>{\centering\arraybackslash\hspace{0pt}}m{#1}}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-50pt}{40pt}
+
+\begin{document}
+\setlength{\tabcolsep}{8pt}
+\renewcommand{\arraystretch}{1.2}
+
+\tableofcontents
+% \newpage
+
+\vspace{3cm}
+\begin{center}
+\begin{tabular}{r r l}
+Acronym & & Compound \\\hline
+MCA  & CAA  & chloroacetic acid \\
+DCA  & DCAA & dichloroacetic acid \\
+TCA  & TCAA & trichloroacetic acid \\
+MFA  & FAA  & fluoroacetic acid \\
+DFA  & DFAA & difluoroacetic acid \\
+TFA  & TFAA & trifluoroacetic acid \\
+CPA  & 2CPA & 2-chloropropionic acid \\
+FPA  & 2FPA & 2-fluoropropionic acid \\
+~    & DFPA & difluoropropionic acid \\
+~    & TFPA & tetrafluoropropionic acid \\
+% &    2Pr-OH & 2-propanol \\
+\end{tabular}
+\end{center}
+
+% THIS IS TO BE DELETED OF COURSE
+\vspace{1cm}
+{\huge\bf Beware! The data below is totally random!}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagebreak
+\section{Compounds} % (fold)
+\label{cha:compounds}
+
+\subsection{Chlorinated compounds} % (fold)
+\label{sub:chlorinated_compounds}
+
+% subsection chlorinated_compounds (end)
+
+\subsubsection{MCA} % (fold)
+\label{ssub:caa}
+
+Calculated and experimental rate constants for the reaction OH $+$ Chloroacetic acid (pKa $=$ 2.866) in anion and acid forms
+
+\input{arrhenuis/MCA-table.tex}
+\input{arrhenuis/MCA-fractions.tex}
+\input{arrhenuis/MCA-data.tex}
+\input{arrhenuis/MCA-split.tex}
+\input{arrhenuis/MCA-pure.tex}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{arrhenuis/{MCA.double}.pdf}
+    \caption{Arrhenius plot for reaction MCA + OH in aqueous phase at different pH values}
+    \label{fig:mca}
+\end{figure}
+
+% subsection caa (end)
+
+\subsubsection{DCA} % (fold)
+\label{ssub:dcaa}
+
+Calculated and experimental rate constants for the reaction OH $+$ Dichloroacetic acid (pKa $=$ 1.301) in anion and acid forms
+
+\input{arrhenuis/DCA-table.tex}
+\input{arrhenuis/DCA-fractions.tex}
+\input{arrhenuis/DCA-data.tex}
+\input{arrhenuis/DCA-split.tex}
+\input{arrhenuis/DCA-pure.tex}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{arrhenuis/{DCA.double}.pdf}
+    \caption{Arrhenius plot for reaction DCA + OH in aqueous phase at different pH values}
+    \label{fig:dca}
+\end{figure}
+
+% subsubsection dcaa (end)
+
+\subsubsection{TCA} % (fold)
+\label{ssub:tcaa}
+
+Trichloroacetic acid \\
+Estimation $k \ge 10^6$ M$^{-1}$s$^{-1}$ \\
+
+\input{arrhenuis/TCA-fractions.tex}
+
+% subsubsection tcaa (end)
+
+\subsubsection{2CPA} % (fold)
+\label{ssub:2cpa}
+
+Calculated and experimental rate constants for the reaction OH $+$ 2-chloropropionic acid (pKa $=$ 2.96) in anion and acid forms
+
+\input{arrhenuis/2CPA-table.tex}
+\input{arrhenuis/2CPA-fractions.tex}
+\input{arrhenuis/2CPA-data.tex}
+\input{arrhenuis/2CPA-split.tex}
+\input{arrhenuis/2CPA-pure.tex}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{arrhenuis/{2CPA.double}.pdf}
+    \caption{Arrhenius plot for reaction 2CPA + OH in aqueous phase at different pH values}
+    \label{fig:2cpa}
+\end{figure}
+
+% subsubsection 2cpa (end)
+
+\subsection{Fluorinated compounds} % (fold)
+\label{sub:fluorinated_compounds}
+
+% subsection fluorinated_compounds (end)
+
+\subsubsection{MFA} % (fold)
+\label{ssub:faa}
+
+Calculated and experimental rate constants for the reaction OH $+$ Fluoroacetic acid (pKa $=$ 2.72) in anion and acid forms
+
+\input{arrhenuis/MFA-table.tex}
+\input{arrhenuis/MFA-fractions.tex}
+\input{arrhenuis/MFA-data.tex}
+\input{arrhenuis/MFA-split.tex}
+\input{arrhenuis/MFA-pure.tex}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{arrhenuis/{MFA.double}.pdf}
+    \caption{Arrhenius plot for reaction MFA + OH in aqueous phase at different pH values}
+    \label{fig:mfa}
+\end{figure}
+
+% subsubsection faa (end)
+
+\subsubsection{DFA} % (fold)
+\label{ssub:dfaa}
+
+Calculated and experimental rate constants for the reaction OH $+$ Difluoroacetic acid(pKa $=$ 1.33) in anion and acid forms
+
+\input{arrhenuis/DFA-table.tex}
+\input{arrhenuis/DFA-fractions.tex}
+\input{arrhenuis/DFA-data.tex}
+\input{arrhenuis/DFA-split.tex}
+\input{arrhenuis/DFA-pure.tex}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{arrhenuis/{DFA.double}.pdf}
+    \caption{Arrhenius plot for reaction DFA + OH in aqueous phase at different pH values}
+    \label{fig:dfa}
+\end{figure}
+
+% subsubsection dfaa (end)
+
+\subsubsection{TFA} % (fold)
+\label{ssub:tfaa}
+
+Trifluoroacetic acid \\
+Estimation $k \ge 10^6$ M$^{-1}$s$^{-1}$ \\
+
+\input{arrhenuis/TFA-fractions.tex}
+
+% subsubsection tfaa (end)
+
+\subsubsection{2FPA} % (fold)
+\label{ssub:2fpa}
+
+Calculated and experimental rate constants for the reaction OH $+$ 2-fluoropropionic acid (pKa $=$ 2.68) in anion and acid forms
+
+\input{arrhenuis/2FPA-table.tex}
+\input{arrhenuis/2FPA-fractions.tex}
+\input{arrhenuis/2FPA-data.tex}
+\input{arrhenuis/2FPA-split.tex}
+\input{arrhenuis/2FPA-pure.tex}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{arrhenuis/{2FPA.double}.pdf}
+    \caption{Arrhenius plot for reaction 2FPA + OH in aqueous phase at different pH values}
+    \label{fig:2fpa}
+\end{figure}
+
+% subsubsection 2fpa (end)
+
+\subsubsection{DFPA} % (fold)
+\label{ssub:dfpa}
+
+Difluoropropionic acid \\
+Estimation $k \ge 10^6$ M$^{-1}$s$^{-1}$ \\
+
+\input{arrhenuis/DFPA-fractions.tex}
+
+% subsubsection dfpa (end)
+
+\subsubsection{TFPA} % (fold)
+\label{ssub:tfpa}
+
+Tetrafluoropropionic acid \\
+Estimation $k \ge 10^6$ M$^{-1}$s$^{-1}$ \\
+
+\input{arrhenuis/TFPA-fractions.tex}
+
+% subsubsection tfpa (end)
+
+% \subsection{Other} % (fold)
+% \label{sub:other}
+
+% % subsection other (end)
+
+% \subsubsection{2Pr-OH} % (fold)
+% \label{ssub:2pr_oh}
+
+% NIST: $k = (1.6 \divsymb 2.3) \cdot 10^9$
+
+% % subsubsection 2pr_oh (end)
+
+% section compounds (end)
+
+% \pagebreak
+\section{Termodynamic data} % (fold)
+\label{sec:termodynamic_data}
+
+\input{arrhenuis/termodyn.tex}
+
+% section termodynamic_data (end)
+
+
+\end{document}
