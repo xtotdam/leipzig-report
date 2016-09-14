@@ -50,6 +50,16 @@ To delete old files launch `clean.cmd`
 
 `make clean` to delete temporary files
 
-#### License
+### License
 
 MIT License, except for `hh.py`, which is published under separate license.
+
+### TODO
+
+ - [x] describe `exceptions.py`
+ - [x] describe `termodyn.py`
+ - [x] ask HH about license
+ - [ ] receive answer
+ - [x] code commentary
+ - [x] license
+ - [ ] rewrite linear regression using scipy / OLS from MR
