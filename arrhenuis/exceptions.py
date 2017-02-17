@@ -1,4 +1,4 @@
-from arrhenius import fractions
+from arrhenius import fractions, draw_png, draw_legend, draw_bw
 
 """This script is for compounds, we can only plot fractions for, because their rate constants are too slow"""
 
@@ -14,7 +14,8 @@ for line in acids:
     acro, name, pKa, pH1, pH2 = line
 
     print acro,
-    latex_fractions = fractions(acro, name, pKa, pH1, pH2, create_table=False)
+    latex_fractions = fractions(acro, name, pKa, pH1, pH2, create_table=False,
+    							draw_png=draw_png, draw_legend=draw_legend, draw_bw=draw_bw)
     with open(acro + '-fractions.tex', 'w') as f:
         f.write(latex_fractions)
     print '...done'
