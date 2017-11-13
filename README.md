@@ -50,6 +50,10 @@ To delete old files launch `clean.cmd`
 
 `make clean` to delete temporary files
 
+`make gendata` to generate junk data file, which also explains his own format
+
+`make purge` = `make clean` + remove `data.txt`
+
 ### License
 
 MIT License, except for `hh.py`, which is published under separate license.

@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean gendata purge
 
 all:
 	cd arrhenuis/ && make all
@@ -14,3 +14,9 @@ clean:
 	rm -vf *.toc
 
 	cd arrhenuis/ && make clean
+
+gendata:
+	cd arrhenuis/ && make gendata
+
+purge: clean
+	cd arrhenuis/ && make purge

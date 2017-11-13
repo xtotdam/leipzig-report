@@ -76,6 +76,7 @@ def read_data_file(fn):
             datasets.append(data[first + 1:i])
         first = i
 
+    # TODO if data.txt ends with === error occurs
     return datasets
 
 def parse(data):
@@ -250,6 +251,7 @@ def pure_params(resacid, resanion):
 
     return string
 
+# TODO divide into 2 functions
 def fractions(acro, name, pKa, pH1, pH2, create_table=True, draw_png=False, draw_legend=True, draw_bw=False):
     """Calculates fractions of anion and acid forms at two different pHs,
        creates a LaTeX table from this data and plots it to
@@ -780,5 +782,23 @@ if __name__ == '__main__':
         # creating nifty plots
         draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid, kanion,
                          draw_png=draw_png, draw_legend=draw_legend, draw_bw=draw_bw)
+
+        # creating SigmaPlot tables
+        from math import log10
+
+        with open(acro + '-sigma-table.txt', 'w') as f:
+            f.write('T\t1/T\tlg k\tlg k -error\tlg k +error\tlg error')
+
+            f.write('\n\npH = ' + str(pH1) + '\n\n')
+            for (t, k, dk) in zip(T1, k1, dk1):
+                f.write(('{:.6g}\t' * 6 + '\n').format(
+                    t, 1./t, log10(k), log10(k-dk), log10(k+dk), log10(dk)
+                    ))
+
+            f.write('\n\npH = ' + str(pH2) + '\n\n')
+            for (t, k, dk) in zip(T2, k2, dk2):
+                f.write(('{:.6g}\t' * 6 + '\n').format(
+                    t, 1./t, log10(k), log10(k-dk), log10(k+dk), log10(dk)
+                    ))
 
         print '...done'

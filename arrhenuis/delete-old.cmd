@@ -3,6 +3,7 @@ del *.png
 del *.pdf
 del *-data.txt
 del *-fractions.tex
+del *-sigma-table.txt
 del *.fractions.pdf
 del *.pyc
 del termodyn*.txt
