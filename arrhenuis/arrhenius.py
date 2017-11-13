@@ -4,6 +4,22 @@ from pprint import pprint
 from matplotlib import pyplot as plt, ticker
 import matplotlib.lines as mlines
 import sys
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--skipplots', action='store_true', required=False, help='skip arrhenius plots')
+parser.add_argument('file', type=str, nargs='?', help='data file')
+args = parser.parse_args()
+
+if args.file is None:
+    print 'No filename provided. Reading \'data.txt\''
+    fn = 'data.txt'
+else:
+    fn = args.file
+
+if args.skipplots:
+    print 'Skipping plots'
+
 
 import matplotlib as mpl
 mpl.style.use('classic')
@@ -19,9 +35,12 @@ R = 8.314e-3
 temps = np.arange(278, 318+1, 5)
 
 # A bit of settings here
-draw_png = False        # should I create also pngs in addition to pdfs?
-draw_legend = True      # should I draw legend on plots?
-draw_bw = False         # should I draw plots black and white?
+draw_png = True             # should I create also pngs in addition to pdfs?
+draw_legend = True          # should I draw legend on plots?
+draw_bw = False             # should I draw plots black and white?
+create_pH_table = True      # should I create fractions table? otherwise only a stub for plot is created
+gen_full_pH_table = False   # should I create full table for pH = 0, 0.5, ... 14 or for pH1 and pH2 only?
+
 
 def stringify(a, da, digits=2):
     """Converts number and its error to nifty latex string
@@ -46,6 +65,7 @@ def stringify(a, da, digits=2):
         return (template + '\\cdot 10^{{{:d}}}').format(b, db, int(alog))
     except ValueError:
         return ''
+
 
 def read_data_file(fn):
     """Obtains data from file with raw data (usually 'data.txt')
@@ -76,8 +96,8 @@ def read_data_file(fn):
             datasets.append(data[first + 1:i])
         first = i
 
-    # TODO if data.txt ends with === error occurs
-    return datasets
+    return filter(bool, datasets)
+
 
 def parse(data):
     """Puts data from dataset to right variables
@@ -105,6 +125,7 @@ def parse(data):
 
     return name, acro, pKa, pH1, T1, k1, dk1, pH2, T2, k2, dk2
 
+
 def plain_output(res):
     """Formats arrhenius and thermodynamic data for plain text output
 
@@ -130,6 +151,7 @@ def plain_output(res):
 
     FEHLER MIT STUDENT-FAKTOR FUER 95% KONFIDENZINTERVALL.
     '''.format(**res)
+
 
 def latex_output_params(res):
     """Formats arrhenius and thermodynamic data for LaTeX text output
@@ -165,6 +187,7 @@ def latex_output_params(res):
         string = string.replace('e+{:02d}'.format(i), ' \\cdot 10^{{{0}}} '.format(i))
 
     return string
+
 
 def latex_double_output_params(res1, res2):
     """Formats two sets of arrhenius and thermodynamic data into one table for LaTeX text output
@@ -214,6 +237,7 @@ def latex_double_output_params(res1, res2):
 
     return string
 
+
 def pure_params(resacid, resanion):
     """Forms table of arrhenius and thermodynamic data (without regression data) for two `result` dictionaries
 
@@ -251,11 +275,10 @@ def pure_params(resacid, resanion):
 
     return string
 
-# TODO divide into 2 functions
-def fractions(acro, name, pKa, pH1, pH2, create_table=True, draw_png=False, draw_legend=True, draw_bw=False):
-    """Calculates fractions of anion and acid forms at two different pHs,
-       creates a LaTeX table from this data and plots it to
-       '*.fractions.pdf'
+
+def latex_fractions(acro, name, pKa, pH1, pH2, create_pH_table=True, gen_full_pH_table=False):
+    """Calculates fractions of anion and acid forms at two different pHs
+       and creates a LaTeX table from this data
 
     Args:
         acro (str): acronym for compound
@@ -263,25 +286,76 @@ def fractions(acro, name, pKa, pH1, pH2, create_table=True, draw_png=False, draw
         pKa (float): pKa
         pH1 (float): pH #1
         pH2 (float): pH #2
-        create_table (bool, optional): whether we create a table or not.
-                                       if False, then return empty string
+        create_pH_table (bool, optional): whether we create a table or not.
+                                          if False, then return empty string
+        gen_full_pH_table (bool, optional): whether to create this table
+                for pH from 0 to 14 with step=0.5 or for pH1 and pH2 only
+
+    Returns:
+        str: LaTeX table with data
+    """
+
+    latex = ''
+
+    if pKa is None:
+        return
+
+    if create_pH_table:
+        if gen_full_pH_table:
+            pH = np.linspace(0, 14, 29)
+        else:
+            if pH1 == pH2:
+                pH = np.array([pH1], dtype=np.float)
+            else:
+                pH = np.array([pH1, pH2], dtype=np.float)
+
+        a = 10.**(pH - pKa)
+        acid = 1 / (1 + a)
+        anion = a / (1 + a)
+
+        tlines = ['$ {0:.1f} $ & $ {1:.8f} $ & $ {2:.8f} $ \\\\'.format(*item) for item in np.vstack((pH, acid, anion)).T]
+
+        latex = '\\begin{samepage}\n\\begin{tabular}{r | l l}pH & [AH] & [A$^{-}$] \\\\\\hline\n' + \
+                '\n'.join(tlines) + '\n\\end{tabular}\n\\end{samepage}'
+
+        for i in range(5, 16):
+            latex = latex.replace('e-{:02d}'.format(i), ' \\cdot 10^{{-{0}}} '.format(i))
+
+    latex += '''\n\n\n
+    \\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\\textwidth]{arrhenuis/{''' + acro + '''.fractions}.pdf}
+        \caption{[AH] and [A$^{-}$] in percent for ''' + name + ''' for different pH values}
+        \label{fig:''' + acro.lower() + '''-fractions}
+    \end{figure}
+    '''
+    return latex
+
+
+def draw_fractions(acro, pKa, pH1, pH2, draw_png=False, draw_legend=True, draw_bw=False):
+    """Calculates fractions of anion and acid forms at two different pHs
+       and plots it to '*.fractions.pdf'
+
+    Args:
+        acro (str): acronym for compound
+        pKa (float): pKa
+        pH1 (float): pH #1
+        pH2 (float): pH #2
         draw_png (bool): determines whether to create png image in addition to pdf
         draw_legend (bool): whether to draw legend or not
         draw_bw (bool): use colors or not (True = black'n'white)
 
     Returns:
-        str: LaTeX table with data
+        None
     """
+
+    if pKa is None:
+        return
+
     if draw_bw:
         c_acid = c_anion = c_vline = 'k'
     else:
         c_acid, c_anion, c_vline = 'rgb'
-
-
-    if pKa is None:
-        with open(acro + '-fractions.tex', 'w') as f:
-            f.write('')
-        return
 
     pH = np.linspace(0, 14, 1000)
     a = 10.**(pH - pKa)
@@ -315,108 +389,6 @@ def fractions(acro, name, pKa, pH1, pH2, create_table=True, draw_png=False, draw
     if draw_png:
         fig.savefig(acro + '.fractions.png', bbox_inches='tight', dpi=250)
 
-    # pH = np.linspace(0, 14, 29)
-    pH = np.array([pH1, pH2], dtype=np.float)
-    a = 10.**(pH - pKa)
-    acid = 1 / (1 + a)
-    anion = a / (1 + a)
-
-    if create_table:
-        tlines = ['$ {0:.1f} $ & $ {1:.8f} $ & $ {2:.8f} $ \\\\'.format(*item) for item in np.vstack((pH, acid, anion)).T]
-
-        latex = '\\begin{samepage}\n\\begin{tabular}{r | l l}pH & [AH] & [A$^{-}$] \\\\\\hline\n' + \
-                '\n'.join(tlines) + '\n\\end{tabular}\n\\end{samepage}'
-
-        for i in range(5, 16):
-            latex = latex.replace('e-{:02d}'.format(i), ' \\cdot 10^{{-{0}}} '.format(i))
-    else:
-        latex = ''
-
-    latex += '''\n\n\n
-    \\begin{figure}[H]
-        \centering
-        \includegraphics[width=0.8\\textwidth]{arrhenuis/{''' + acro + '''.fractions}.pdf}
-        \caption{[AH] and [A$^{-}$] in percent for ''' + name + ''' for different pH values}
-        \label{fig:''' + acro.lower() + '''-fractions}
-    \end{figure}
-    '''
-    return latex
-
-'''
-def draw_plot(T, k, dk, result, pH, draw_png=False, draw_legend=True, draw_bw=False):
-    """Draws plot with the data provided
-
-    Args:
-        T (1D ndarray): temperatures
-        k (1D ndarray): rate constants
-        dk (1D ndarray): rate constants errors
-        result (dict): arrhenius and thermodynamic data dictionary
-        pH (float): pH (for label)
-        draw_png (bool): determines whether to create png image in addition to pdf
-        draw_legend (bool): whether to draw legend or not
-        draw_bw (bool): use colors or not (True = black'n'white)
-
-    Returns:
-        None
-    """
-    x = 1. / T
-    y = np.log10(k)
-    dylo = abs(y - np.log10(k - dk))
-    dyhi = abs(y - np.log10(k + dk))
-    yerr = np.stack((dylo, dyhi))
-
-    fig = plt.figure(figsize=(10,8))
-    ax = fig.gca()
-
-    xlims = np.min(x) - 5e-5, np.max(x) + 5e-5
-    ax.set_xlim(*xlims)
-    # ax.set_ylim(np.min(y) - 0.02, np.max(y) + 0.02)
-
-    ax.errorbar(x, y, yerr=yerr, fmt='o', c='k')
-    xs = np.linspace(*xlims)
-    ys = np.log10(result['a']) - result['ea'] / 8.314 * xs * 1000 / 2.3026
-    ax.plot(xs, ys, lw=2, c='k')
-
-    line = mlines.Line2D([], [], color='black', marker='o', ls='-', markersize=8, label='pH = ' + str(pH))
-    if draw_legend:
-        ax.legend(handles=[line], handlelength=3)
-
-    ax.xaxis.set_major_locator(ticker.MaxNLocator(8))
-    ax.xaxis.set_minor_locator(ticker.MaxNLocator(40))
-    ax.yaxis.set_major_locator(ticker.MaxNLocator(8))
-    ax.yaxis.set_minor_locator(ticker.MaxNLocator(40))
-
-    scale_pow = 3
-    def my_formatter_fun(x, p):
-        """Formatter for ticks"""
-        return "%.1f" % (x * (10 ** scale_pow))
-    ax.get_xaxis().set_major_formatter(ticker.FuncFormatter(my_formatter_fun))
-    ax.set_xlabel('my label ' + '$10^{{{0:d}}}$'.format(scale_pow))
-
-    ax.set_ylabel('lg (k / [M$^{-1}$s$^{-1}$])')
-    ax.set_xlabel('T$^{-1}$ [10$^{-3}$ K$^{-1}]$')
-    # ax.ticklabel_format(style = 'sci')
-
-    ax2 = ax.twiny()
-    ax2.set_xlim(*xlims)
-
-    ax2.set_xticks(x)
-
-    fig.canvas.draw()
-    labels = [item.get_text() for item in ax2.get_xticklabels()]
-    newlabels = list()
-    for label in labels:
-        try:
-            newlabels.append(str(int(round(1. / float(label)))))
-        except:
-            newlabels.append(label)
-    ax2.set_xticklabels(newlabels)
-    ax2.set_xlabel('T [K]', va='bottom')
-
-    fig.savefig(acro + '.pdf')
-    if draw_png:
-        fig.savefig(acro + '.png', dpi=300)
-'''
 
 def draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid, kanion, draw_png=False, draw_legend=True, draw_bw=False, singleplot=False):
     """Summary
@@ -533,6 +505,7 @@ def draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid
     if draw_png:
         fig.savefig(acro + '.double.png', dpi=300)
 
+
 def draw_plot(T, k, dk, result, pH, draw_png=False, draw_legend=True, draw_bw=False):
     """Draws plot with the data provided
 
@@ -551,6 +524,7 @@ def draw_plot(T, k, dk, result, pH, draw_png=False, draw_legend=True, draw_bw=Fa
     """
     # !! NB : NOT TESTED AT ALL !!
     return draw_double_plot(T, k, dk, result, pH, T, k, dk, result, pH, None, None, draw_png, draw_legend, draw_bw, singleplot=True)
+
 
 def split(acro, pKa, pH1, pH2, result1, result2, digits=2):
     """Summary
@@ -633,6 +607,7 @@ def split(acro, pKa, pH1, pH2, result1, result2, digits=2):
 
     return latex, kacid, kanion
 
+
 def create_table(pH1, pH2, T1, k1, dk1, T2, k2, dk2, kacid, kanion):
     """Creates latex table with the input data and 'pure' rate constants
 
@@ -707,24 +682,29 @@ def create_table(pH1, pH2, T1, k1, dk1, T2, k2, dk2, kacid, kanion):
 
     return latex
 
+
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        fn = 'data.txt'
-    else:
-        fn = sys.argv[-1]
 
     open('termodyn-acid.data.txt', 'w').close()     # clearing files in case they existed
     open('termodyn-anion.data.txt', 'w').close()
+
     for dataset in read_data_file(fn):
 
         name, acro, pKa, pH1, T1, k1, dk1, pH2, T2, k2, dk2 = parse(dataset)
         print acro,
 
         # calculating fractions based on pKa, putting them into a separate file
-        latex_fractions = fractions(acro, name, pKa, pH1, pH2,
-                                    draw_png=draw_png, draw_legend=draw_legend, draw_bw=draw_bw)
+        latex_fracs = latex_fractions(acro, name, pKa, pH1, pH2,
+                                      create_pH_table=create_pH_table, gen_full_pH_table=gen_full_pH_table)
         with open(acro + '-fractions.tex', 'w') as f:
-            f.write(latex_fractions)
+            f.write(latex_fracs)
+
+        # creating fractions plots
+        if not args.skipplots:
+            draw_fractions(acro, pKa, pH1, pH2, draw_png=draw_png, draw_legend=draw_legend, draw_bw=draw_bw)
+        else:
+            # made to evade latex errors while compiling
+            with open('dummy.pdf.dummy', 'rb') as src, open(acro + '.fractions.pdf', 'wb') as dst: dst.write(src.read())
 
         # checking for errors
         if not len(T1) == len(k1) == len(dk1):
@@ -780,8 +760,11 @@ if __name__ == '__main__':
             f.write(latex_params)
 
         # creating nifty plots
-        draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid, kanion,
-                         draw_png=draw_png, draw_legend=draw_legend, draw_bw=draw_bw)
+        if not args.skipplots:
+            draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid, kanion,
+                             draw_png=draw_png, draw_legend=draw_legend, draw_bw=draw_bw)
+        else:
+            with open('dummy.pdf.dummy', 'rb') as src, open(acro + '.double.pdf', 'wb') as dst: dst.write(src.read())
 
         # creating SigmaPlot tables
         from math import log10

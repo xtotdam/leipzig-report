@@ -5,6 +5,12 @@ all:
 
 	cd ../
 	pdflatex main-leipzig.tex
+	pdflatex main-leipzig.tex
+	# pdflatex main-leipzig.tex
+
+latex:
+	pdflatex main-leipzig.tex
+	pdflatex main-leipzig.tex
 
 clean:
 	rm -vf *.aux

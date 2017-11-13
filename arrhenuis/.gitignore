@@ -2,4 +2,5 @@
 *.pyc
 *.tex
 *.pdf
+*-sigma-table.txt
 /data.txt
