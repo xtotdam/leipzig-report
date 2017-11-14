@@ -61,6 +61,9 @@ To delete old files launch `clean.cmd`
 
 `make purge` = `make clean` + remove `data.txt`
 
+
+Also try running `python arrhenuis/arrhenius.py -h` for some information on maybe useful arguments
+
 ### License
 
 MIT License, except for `hh.py`, which is published under separate license.

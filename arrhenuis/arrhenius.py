@@ -8,6 +8,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--skipplots', action='store_true', required=False, help='skip arrhenius plots')
+parser.add_argument('--verbose', action='store_true', required=False, help='print additional information for plots')
 parser.add_argument('file', type=str, nargs='?', help='data file')
 args = parser.parse_args()
 
@@ -19,6 +20,9 @@ else:
 
 if args.skipplots:
     print 'Skipping plots'
+
+if args.verbose:
+    print 'Printing additional plot information'
 
 
 import matplotlib as mpl
@@ -446,6 +450,12 @@ def draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid
     ax.plot(xs, ys1, lw=2, c=c_ph1, label='pH = ' + str(pH1))
     ax.plot(xs, ys2, lw=2, c=c_ph2, label='pH = ' + str(pH2), ls='--')
 
+    if args.verbose:
+        print '\npH', pH1
+        print 'Linear slope, intercept: {:8.3f} {:8.3f}'.format(-result1['ea'] / 8.314 * 1000 / 2.3026, np.log10(result1['a']))
+        print 'pH', pH2
+        print 'Linear slope, intercept: {:8.3f} {:8.3f}'.format(-result2['ea'] / 8.314 * 1000 / 2.3026, np.log10(result2['a']))
+
     if not singleplot:
         # plotting 'pure' data
         ax.scatter(1. / temps, np.log10(kacid),  c='k', marker='x',     s=120, label='k_acid', zorder=99)
@@ -454,8 +464,14 @@ def draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid
         # plotting 'pure' regression
         slope, intercept, r_value, p_value, std_err = linregress(1. / temps, np.log10(kacid))
         ax.plot(xs, xs * slope + intercept, c='k', ls=':', lw=1.5)
+        if args.verbose:
+            print 'Acid'
+            print 'Slope, intercept: {:8.3f} {:8.3f}'.format(slope, intercept)
         slope, intercept, r_value, p_value, std_err = linregress(1. / temps, np.log10(kanion))
         ax.plot(xs, xs * slope + intercept, c='k', ls=':', lw=1.5)
+        if args.verbose:
+            print 'Anion'
+            print 'Slope, intercept: {:8.3f} {:8.3f}'.format(slope, intercept)
 
     # legend
     line1 = mlines.Line2D([], [], color=c_ph1, lw=2, marker='s',     ls='-',  markersize=8,  label='pH = ' + str(pH1))
