@@ -27,9 +27,9 @@ mpl.style.use('classic')
 from hh import calculate_params
 
 plt.rc('font', family='serif')
-plt.rcParams['axes.labelsize'] = 20
-plt.rcParams['xtick.labelsize'] = 15
-plt.rcParams['ytick.labelsize'] = 15
+plt.rcParams['axes.labelsize'] = 25
+plt.rcParams['xtick.labelsize'] = 20
+plt.rcParams['ytick.labelsize'] = 20
 
 R = 8.314e-3
 temps = np.arange(278, 318+1, 5)
@@ -431,7 +431,7 @@ def draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid
     dyhi2 = abs(y2 - np.log10(k2 + dk2))
     yerr2 = np.stack((dylo2, dyhi2))
 
-    fig = plt.figure(figsize=(10,8))
+    fig = plt.figure(figsize=(12, 9))
     ax = fig.gca()
 
     xlims = min(np.min(x1), np.min(x2)) - 5e-5, max(np.max(x1), np.max(x2)) + 5e-5
@@ -464,9 +464,9 @@ def draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid
     line4 = mlines.Line2D([], [], color='black',     marker=(6,2,0), ls=':',  markersize=12, label='k$_{anion}$')
     if draw_legend:
         if not singleplot:
-            ax.legend(handles=[line1, line2, line3, line4], handlelength=3)
+            ax.legend(handles=[line1, line2, line3, line4], handlelength=3, fontsize=20)
         else:
-            ax.legend(handles=[line2, line4], handlelength=3)
+            ax.legend(handles=[line2, line4], handlelength=3, fontsize=20)
 
     # messing with ticks
     ax.xaxis.set_major_locator(ticker.MaxNLocator(8))
@@ -477,7 +477,7 @@ def draw_double_plot(T1, k1, dk1, result1, pH1, T2, k2, dk2, result2, pH2, kacid
     scale_pow = 3
     def my_formatter_fun(x, p):
         """Formatter for ticks"""
-        return "%.1f" % (x * (10 ** scale_pow))
+        return "%.2f" % (x * (10 ** scale_pow))
     ax.get_xaxis().set_major_formatter(ticker.FuncFormatter(my_formatter_fun))
     ax.set_xlabel('my label ' + '$10^{{{0:d}}}$'.format(scale_pow))
 
